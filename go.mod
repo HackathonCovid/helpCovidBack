@@ -11,10 +11,10 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607 // indirect
 	github.com/gin-gonic/gin v1.6.2
 	github.com/jinzhu/gorm v1.9.12
-	github.com/joho/godotenv v1.3.0 // indirect
-	github.com/matcornic/hermes/v2 v2.1.0 // indirect
+	github.com/joho/godotenv v1.3.0
+	github.com/matcornic/hermes/v2 v2.1.0
 	github.com/sendgrid/rest v2.4.1+incompatible // indirect
-	github.com/sendgrid/sendgrid-go v3.5.0+incompatible // indirect
+	github.com/sendgrid/sendgrid-go v3.5.0+incompatible
 	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/twinj/uuid v1.0.0
 	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59
