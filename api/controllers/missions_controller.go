@@ -141,8 +141,8 @@ func (server *Server) GetMission(c *gin.Context) {
 	})
 }
 
+// AddUserToMission : Validate an apply
 func (server *Server) AddUserToMission(c *gin.Context) {
-	//vars := mux.Vars(r)
 	missionID := c.Param("id")
 	// Check if the mission id is valid
 	pid, err := strconv.ParseUint(missionID, 10, 64)
@@ -203,8 +203,8 @@ func (server *Server) AddUserToMission(c *gin.Context) {
 	})
 }
 
+// DeleteUserFromMission : don't accept a volunteer
 func (server *Server) DeleteUserFromMission(c *gin.Context) {
-	//vars := mux.Vars(r)
 	missionID := c.Param("id")
 	// Check if the mission id is valid
 	pid, err := strconv.ParseUint(missionID, 10, 64)
