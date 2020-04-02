@@ -15,7 +15,7 @@ require (
 	github.com/matcornic/hermes/v2 v2.1.0
 	github.com/sendgrid/rest v2.4.1+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.5.0+incompatible
-	github.com/stretchr/testify v1.5.1 // indirect
+	github.com/stretchr/testify v1.5.1
 	github.com/twinj/uuid v1.0.0
 	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59
 )
