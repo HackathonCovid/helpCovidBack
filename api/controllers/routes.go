@@ -35,6 +35,7 @@ func (s *Server) initializeRoutes() {
 		v1.GET("/applies/:id", s.GetApplies)
 		v1.POST("/applies/:id", middlewares.TokenAuthMiddleware(), s.ApplyMission)
 		v1.DELETE("/applies/:id", middlewares.TokenAuthMiddleware(), s.WithdrawApply)
+		v1.GET("/userapplies/:id", s.GetAppliesById)
 
 		// Comments routes
 		v1.POST("/comments/:id", middlewares.TokenAuthMiddleware(), s.CreateComment)
