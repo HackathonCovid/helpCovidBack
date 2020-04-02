@@ -5,8 +5,8 @@ services:
     image: postgres:9.6-alpine
     environment:
     - API_SECRET=98hakn92c
-    - POSTGRES_DB=hackathongo
-    - POSTGRES_USER=hackathon-go
+    - POSTGRES_DB=hackathongo2020
+    - POSTGRES_USER=hackathon2020-go
     - POSTGRES_PASSWORD=lmdpe
     ports:
     - "5432:5432"
