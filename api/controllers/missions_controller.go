@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
-	"log"
-	"github.com/Muhammad-Tounsi/Hackathon2020/api/auth"
-	"github.com/Muhammad-Tounsi/Hackathon2020/api/models"
-	"github.com/Muhammad-Tounsi/Hackathon2020/api/utils/formaterror"
+
+	"github.com/HackathonCovid/helpCovidBack/api/auth"
+	"github.com/HackathonCovid/helpCovidBack/api/models"
+	"github.com/HackathonCovid/helpCovidBack/api/utils/formaterror"
 	"github.com/gin-gonic/gin"
 )
 
@@ -140,8 +141,7 @@ func (server *Server) GetMission(c *gin.Context) {
 	})
 }
 
-
-func  (server *Server) AddUserToMission(c *gin.Context) {
+func (server *Server) AddUserToMission(c *gin.Context) {
 	//vars := mux.Vars(r)
 	missionID := c.Param("id")
 	// Check if the mission id is valid
@@ -188,7 +188,7 @@ func  (server *Server) AddUserToMission(c *gin.Context) {
 		return
 	}
 
-	err  = server.DB.Model(&mission).Association("Users").Append(&user).Error
+	err = server.DB.Model(&mission).Association("Users").Append(&user).Error
 	if err != nil {
 		errList := formaterror.FormatError(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -203,7 +203,7 @@ func  (server *Server) AddUserToMission(c *gin.Context) {
 	})
 }
 
-func (server *Server) DeleteUserFromMission(c *gin.Context){
+func (server *Server) DeleteUserFromMission(c *gin.Context) {
 	//vars := mux.Vars(r)
 	missionID := c.Param("id")
 	// Check if the mission id is valid
@@ -228,11 +228,11 @@ func (server *Server) DeleteUserFromMission(c *gin.Context){
 	}
 	// check if the user exists
 	user := models.User{}
-    if err != nil {
-        log.Fatal(err)
+	if err != nil {
+		log.Fatal(err)
 	}
-	
-	type Temporaire struct{
+
+	type Temporaire struct {
 		uid uint64
 	}
 
@@ -257,7 +257,7 @@ func (server *Server) DeleteUserFromMission(c *gin.Context){
 		return
 	}
 
-	err = server.DB.Debug().Model(models.User{}).Where("id = ?",temporaire.uid ).Take(&user).Error
+	err = server.DB.Debug().Model(models.User{}).Where("id = ?", temporaire.uid).Take(&user).Error
 	if err != nil {
 		errList["Unauthorized"] = ""
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -277,8 +277,8 @@ func (server *Server) DeleteUserFromMission(c *gin.Context){
 		})
 		return
 	}
-	
-	err =server.DB.Model(&mission).Association("Users").Delete(&user).Error
+
+	err = server.DB.Model(&mission).Association("Users").Delete(&user).Error
 	if err != nil {
 		errList := formaterror.FormatError(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{

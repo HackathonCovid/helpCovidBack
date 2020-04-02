@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"fmt"
 
-	"github.com/Muhammad-Tounsi/Hackathon2020/api/auth"
-	"github.com/Muhammad-Tounsi/Hackathon2020/api/models"
-	"github.com/Muhammad-Tounsi/Hackathon2020/api/utils/formaterror"
+	"github.com/HackathonCovid/helpCovidBack/api/auth"
+	"github.com/HackathonCovid/helpCovidBack/api/models"
+	"github.com/HackathonCovid/helpCovidBack/api/utils/formaterror"
 	"github.com/gin-gonic/gin"
 )
 
@@ -95,27 +95,27 @@ func (server *Server) CreateComment(c *gin.Context) {
 		return
 	}
 
-//	fmt.Printf("User id: %v", mission.ID)
-//	fmt.Printf(" Vote id: %v", comment.MissionID)
+	//	fmt.Printf("User id: %v", mission.ID)
+	//	fmt.Printf(" Vote id: %v", comment.MissionID)
 	fmt.Printf("User id: %v", uid)
 	fmt.Printf("mission id: %v", pid)
 
-//	server.DB.Model(&vote).Association("Users").Append(&user);
-	
-/*	commentCreated, err := comment.SaveComment(server.DB, &mission)
-	if err != nil {
-		formattedError := formaterror.FormatError(err.Error())
-		errList = formattedError
-		c.JSON(http.StatusNotFound, gin.H{
-			"status": http.StatusNotFound,
-			"error":  errList,
-		})
-		return
-	}
-	c.JSON(http.StatusCreated, gin.H{
-		"status":   http.StatusCreated,
-		"response": commentCreated,
-	})*/
+	//	server.DB.Model(&vote).Association("Users").Append(&user);
+
+	/*	commentCreated, err := comment.SaveComment(server.DB, &mission)
+		if err != nil {
+			formattedError := formaterror.FormatError(err.Error())
+			errList = formattedError
+			c.JSON(http.StatusNotFound, gin.H{
+				"status": http.StatusNotFound,
+				"error":  errList,
+			})
+			return
+		}
+		c.JSON(http.StatusCreated, gin.H{
+			"status":   http.StatusCreated,
+			"response": commentCreated,
+		})*/
 
 	err_2 := server.DB.Model(&mission).Association("Comments").Append(&comment).Error
 	if err_2 != nil {
@@ -185,7 +185,7 @@ func (server *Server) GetComments(c *gin.Context) {
 func (server *Server) UpdateComment(c *gin.Context) {
 	//clear previous error if any
 	errList = map[string]string{}
-	
+
 	commentID := c.Param("id")
 	// Check if the comment id is valid
 	pid, err := strconv.ParseUint(commentID, 10, 64)
