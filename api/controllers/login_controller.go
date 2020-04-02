@@ -91,6 +91,7 @@ func (server *Server) SignIn(email, password string) (map[string]interface{}, er
 	userData["lastname"] = user.Lastname
 	userData["type_orga"] = user.TypeOrga
 	userData["orga_name"] = user.OrgaName
+	userData["is_volunteer"] = user.Isvolunteer
 	userData["city"] = user.City
 	userData["adress"] = user.Adress
 	userData["phone_number"] = user.PhoneNumber
