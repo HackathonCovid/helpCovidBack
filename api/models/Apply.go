@@ -15,6 +15,7 @@ type Apply struct {
 	MissionID uint64    `gorm:"not null" json:"mission_id"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	Mission   Mission       `json:"mission"`
 }
 
 // SaveApply : function to apply to a mission
@@ -68,6 +69,26 @@ func (a *Apply) GetAppliesInfo(db *gorm.DB, pid uint64) (*[]Apply, error) {
 	}
 	return &applies, err
 }
+
+// GetAppliesInfo : get the infos
+func (a *Apply) GetAppliesByUserId(db *gorm.DB, pid uint64) (*[]Apply, error) {
+
+	applies := []Apply{}
+	err := db.Debug().Model(&Apply{}).Where("user_id = ?", pid).Find(&applies).Error
+	if err != nil {
+		return &[]Apply{}, err
+	}
+	if len(applies) > 0 {
+		for i := range applies {
+			err := db.Debug().Model(&Mission{}).Where("id = ?", applies[i].MissionID).Take(&applies[i].Mission).Error
+			if err != nil {
+				return  &[]Apply{}, err
+			}
+		}
+	}
+	return &applies, err
+}
+
 
 // DeleteUserApplies : When a user is deleted, we also delete the applies that the user had
 func (a *Apply) DeleteUserApplies(db *gorm.DB, uid uint64) (int64, error) {

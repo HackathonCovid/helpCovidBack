@@ -186,3 +186,50 @@ func (server *Server) WithdrawApply(c *gin.Context) {
 		"response": "Apply deleted",
 	})
 }
+
+
+func (server *Server) GetAppliesById(c *gin.Context) {
+	//clear previous error if any
+	errList = map[string]string{}
+
+	missionID := c.Param("id")
+
+	// Is a valid mission id given to us?
+	pid, err := strconv.ParseUint(missionID, 10, 64)
+	if err != nil {
+		fmt.Println("this is the error: ", err)
+		errList["Invalid_request"] = "Invalid Request"
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errList,
+		})
+		return
+	}
+	// check if the user exist
+	user := models.User{}
+	err = server.DB.Debug().Model(models.User{}).Where("id = ?", pid).Take(&user).Error
+	if err != nil {
+		errList["Unauthorized"] = "Unauthorized"
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": http.StatusUnauthorized,
+			"error":  errList,
+		})
+		return
+	}
+
+	apply := models.Apply{}
+
+	applies, err := apply.GetAppliesByUserId(server.DB, pid)
+	if err != nil {
+		errList["No_applies"] = "No Applies found"
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  errList,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":   http.StatusOK,
+		"response": applies,
+	})
+}
