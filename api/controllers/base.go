@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Muhammad-Tounsi/Hackathon2020/api/middlewares"
-	"github.com/Muhammad-Tounsi/Hackathon2020/api/models"
+	"github.com/HackathonCovid/helpCovidBack/api/middlewares"
+	"github.com/HackathonCovid/helpCovidBack/api/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
