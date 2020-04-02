@@ -327,8 +327,11 @@ func (server *Server) DeleteUser(c *gin.Context) {
 	// Also delete the missions and the comments that this user created if any
 	comment := models.Comment{}
 	mission := models.Mission{}
+	apply := models.Apply{}
 
 	_, err = comment.DeleteUserComments(server.DB, uint64(uid))
+
+	_, err = apply.DeleteUserApplies(server.DB, uint64(uid))
 
 	_, err = mission.DeleteUserMissions(server.DB, uint64(uid))
 

@@ -293,9 +293,12 @@ func (server *Server) DeleteMission(c *gin.Context) {
 		return
 	}
 	comment := models.Comment{}
+	apply := models.Apply{}
 
-	// Also delete the comments that this mission have.
+	// Also delete the comments and applies that this mission have.
 	_, err = comment.DeleteMissionComments(server.DB, pid)
+
+	_, err = apply.DeleteMissionApplies(server.DB, pid)
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":   http.StatusOK,
