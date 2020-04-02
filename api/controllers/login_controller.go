@@ -89,6 +89,15 @@ func (server *Server) SignIn(email, password string) (map[string]interface{}, er
 	userData["email"] = user.Email
 	userData["firstname"] = user.Firstname
 	userData["lastname"] = user.Lastname
+	userData["type_orga"] = user.TypeOrga
+	userData["orga_name"] = user.OrgaName
+	userData["city"] = user.City
+	userData["adress"] = user.Adress
+	userData["phone_number"] = user.PhoneNumber
+	userData["description"] = user.Description
+	userData["degree"] = user.Degree
+	userData["longitude"] = user.Longitude
+	userData["latitude"] = user.Latitude
 
 	return userData, nil
 }

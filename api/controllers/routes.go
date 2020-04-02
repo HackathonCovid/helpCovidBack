@@ -28,9 +28,8 @@ func (s *Server) initializeRoutes() {
 		v1.PUT("/missions/:id", middlewares.TokenAuthMiddleware(), s.UpdateMission)
 		v1.DELETE("/missions/:id", middlewares.TokenAuthMiddleware(), s.DeleteMission)
 		v1.GET("/user_missions/:id", s.GetUserMissions)
-		v1.POST("/user_missions/:id",  middlewares.TokenAuthMiddleware(), s.AddUserToMission)
-		v1.DELETE("/user_missions/:id", middlewares.TokenAuthMiddleware(), s.DeleteUserFromMission)
-		
+		//v1.POST("/user_missions/:id",  middlewares.TokenAuthMiddleware(), s.AddUserToMission)
+		//v1.DELETE("/user_missions/:id", middlewares.TokenAuthMiddleware(), s.DeleteUserFromMission)
 
 		// Applies routes
 		v1.GET("/applies/:id", s.GetApplies)

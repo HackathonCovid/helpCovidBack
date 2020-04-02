@@ -11,12 +11,12 @@ import (
 
 // Message struct
 type Message struct {
-	ID        uint64    `gorm:"primary_key;auto_increment" json:"id"`
-	TransmitterID uint64   `gorm:"not null" json:"user_id"`
-	RecipientID uint64    `gorm:"not null" json:"mission_id"`
-	Body      string    `gorm:"text;not null;" json:"body"`
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	ID         uint64    `gorm:"primary_key;auto_increment" json:"id"`
+	EmmeteurID uint64    `gorm:"not null" json:"user_id"`
+	MissionID  uint64    `gorm:"not null" json:"mission_id"`
+	Body       string    `gorm:"text;not null;" json:"body"`
+	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 // Prepare : prepare statements
@@ -50,7 +50,7 @@ func (c *Message) Validate(action string) map[string]string {
 // SaveMessage : function to save a Message linked to a user
 func (c *Message) SaveMessage(db *gorm.DB, mission *Mission) (*Message, error) {
 
-//	err :=db.Model(&mission).Association("Messages").Append(&c).Error;
+	//	err :=db.Model(&mission).Association("Messages").Append(&c).Error;
 	//server.DB.Model(&mission).Association("Messages").Append(&Message);
 	err := db.Debug().Create(&c).Error
 	if err != nil {

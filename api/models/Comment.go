@@ -52,7 +52,7 @@ func (c *Comment) Validate(action string) map[string]string {
 // SaveComment : function to save a comment linked to a user
 func (c *Comment) SaveComment(db *gorm.DB, mission *Mission) (*Comment, error) {
 
-//	err :=db.Model(&mission).Association("Comments").Append(&c).Error;
+	//	err :=db.Model(&mission).Association("Comments").Append(&c).Error;
 	//server.DB.Model(&mission).Association("Comments").Append(&comment);
 	err := db.Debug().Create(&c).Error
 	if err != nil {

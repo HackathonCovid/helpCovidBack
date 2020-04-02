@@ -12,23 +12,23 @@ import (
 
 // Mission Struct
 type Mission struct {
-	UUID             uuid.UUID `gorm:"type:uuid;unique_index;" json:"uuid"`
-	ID               uint64    `gorm:"primary_key;auto_increment" json:"id"`
-	Title            string    `gorm:"size:255;not null;" json:"title"`
-	Description      string    `gorm:"text;not null;" json:"description"`
-	StartDate        time.Time `gorm:"not null;" json:"start_date"`
-	EndDate          time.Time `gorm:"null;" json:"end_date"`
-	NbDays           int       `gorm:"null;" json:"nb_days"`
-	NbPeopleRequired int       `gorm:"null;" json:"nb_people_required"`
-	SkillsRequired   string    `gorm:"text;not null;" json:"skills_required"`
-	NightOrDay       string    `gorm:"size:150;not null;" json:"night_or_day"`
-	AddressHospital  string    `gorm:"size:255;not null;" json:"address_hospital"`
-	Author           User      `json:"author"`
-	AuthorID         uint64    `gorm:"not null" json:"author_id"`
-	CreatedAt        time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt        time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	Comments []*Comment `gorm:"many2many:mission_comments;association_foreignkey:id;foreignkey:id" json:"comments,omitempty"`
-	Users []*User `gorm:"many2many:mission_users;association_foreignkey:id;foreignkey:id" json:"users,omitempty"`
+	UUID             uuid.UUID  `gorm:"type:uuid;unique_index;" json:"uuid"`
+	ID               uint64     `gorm:"primary_key;auto_increment" json:"id"`
+	Title            string     `gorm:"size:255;not null;" json:"title"`
+	Description      string     `gorm:"text;not null;" json:"description"`
+	StartDate        time.Time  `gorm:"not null;" json:"start_date"`
+	EndDate          time.Time  `gorm:"null;" json:"end_date"`
+	NbDays           int        `gorm:"null;" json:"nb_days"`
+	NbPeopleRequired int        `gorm:"null;" json:"nb_people_required"`
+	SkillsRequired   string     `gorm:"text;not null;" json:"skills_required"`
+	NightOrDay       string     `gorm:"size:150;not null;" json:"night_or_day"`
+	AddressHospital  string     `gorm:"size:255;not null;" json:"address_hospital"`
+	Author           User       `json:"author"`
+	AuthorID         uint64     `gorm:"not null" json:"author_id"`
+	CreatedAt        time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt        time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	Comments         []*Comment `gorm:"many2many:mission_comments;association_foreignkey:id;foreignkey:id" json:"comments,omitempty"`
+	Users            []*User    `gorm:"many2many:mission_users;association_foreignkey:id;foreignkey:id" json:"users,omitempty"`
 }
 
 // TableName : Gorm related
@@ -118,8 +118,8 @@ func (m *Mission) SaveMission(db *gorm.DB) (*Mission, error) {
 func (m *Mission) FindAllMissions(db *gorm.DB) (*[]Mission, error) {
 	var err error
 	missions := []Mission{}
-	err = db.Debug().Model(&Mission{}).Limit(100).Preload("Users").Order("created_at desc").Find(&missions).Error
-	if err != nil {  
+	err = db.Debug().Model(&Mission{}).Limit(100).Preload("Users").Preload("Comments").Order("created_at desc").Find(&missions).Error
+	if err != nil {
 		return &[]Mission{}, err
 	}
 	if len(missions) > 0 {

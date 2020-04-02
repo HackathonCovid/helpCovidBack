@@ -117,9 +117,9 @@ func (server *Server) CreateComment(c *gin.Context) {
 			"response": commentCreated,
 		})*/
 
-	err_2 := server.DB.Model(&mission).Association("Comments").Append(&comment).Error
-	if err_2 != nil {
-		formattedError := formaterror.FormatError(err_2.Error())
+	err2 := server.DB.Model(&mission).Association("Comments").Append(&comment).Error
+	if err2 != nil {
+		formattedError := formaterror.FormatError(err2.Error())
 		errList = formattedError
 		c.JSON(http.StatusNotFound, gin.H{
 			"status": http.StatusNotFound,

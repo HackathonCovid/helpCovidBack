@@ -17,26 +17,25 @@ import (
 
 // User Struct
 type User struct {
-	UUID         uuid.UUID  `gorm:"type:uuid;unique_index;" json:"uuid"`
-	ID           uint64     `gorm:"primary_key;auto_increment" json:"id"`
-	Firstname    string     `valid:"required,alpha,length(2|255)" json:"firstname"`
-	Lastname     string     `valid:"required,alpha,length(2|255)" json:"lastname"`
-	Email        string     `gorm:"size:100;not null;unique" valid:"email" json:"email"`
-	Password     string     `gorm:"size:100;not null;" json:"password"`
-	Isvolunteer  int        `valid:"range(0|1),numeric" json:"is_volunteer"`
-	Dateofbirth  time.Time  `gorm:"null;" json:"date_of_birth"`
-	Sexe         string     `gorm:"size:100;not null;" json:"sexe"`
-	City         string     `gorm:"size:150;not null;" json:"city"`
-	Adress       string     `gorm:"size:150;not null;" json:"adress"`
-	PhoneNumber  string     `gorm:"size:15;null" json:"phone_number"`
-	HospitalName string     `gorm:"size:150;null;" json:"hospital_name"`
-	Description  string     `gorm:"text;null;" json:"description"`
-	Degree       string     `gorm:"text;null;" json:"degree"`
-	Longitude    string     `gorm:"text;null;" json:"longitude"`
-	Latitude     string     `gorm:"text;null;" json:"latitude"`
-	CreatedAt    time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt    time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	Messages     []*Message `gorm:"many2many:message_users;association_foreignkey:id;foreignkey:id" json:"messages,omitempty"`
+	UUID        uuid.UUID  `gorm:"type:uuid;unique_index;" json:"uuid"`
+	ID          uint64     `gorm:"primary_key;auto_increment" json:"id"`
+	Firstname   string     `valid:"required,alpha,length(2|255)" json:"firstname"`
+	Lastname    string     `valid:"required,alpha,length(2|255)" json:"lastname"`
+	Email       string     `gorm:"size:100;not null;unique" valid:"email" json:"email"`
+	Password    string     `gorm:"size:100;not null;" json:"password"`
+	Isvolunteer int        `valid:"range(0|1),numeric" json:"is_volunteer"`
+	TypeOrga    string     `gorm:"size:150;null;" json:"type_orga"`
+	City        string     `gorm:"size:150;not null;" json:"city"`
+	Adress      string     `gorm:"size:150;not null;" json:"adress"`
+	PhoneNumber string     `gorm:"size:15;null" json:"phone_number"`
+	OrgaName    string     `gorm:"size:150;null;" json:"orga_name"`
+	Description string     `gorm:"text;null;" json:"description"`
+	Degree      string     `gorm:"text;null;" json:"degree"`
+	Longitude   string     `gorm:"text;null;" json:"longitude"`
+	Latitude    string     `gorm:"text;null;" json:"latitude"`
+	CreatedAt   time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt   time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	Messages    []*Message `gorm:"many2many:message_users;association_foreignkey:id;foreignkey:id" json:"messages,omitempty"`
 }
 
 // TableName : Gorm related
@@ -69,11 +68,11 @@ func (u *User) Prepare() {
 	u.Firstname = html.EscapeString(strings.TrimSpace(u.Firstname))
 	u.Lastname = html.EscapeString(strings.TrimSpace(u.Lastname))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
-	u.Sexe = html.EscapeString(strings.TrimSpace(u.Sexe))
 	u.City = html.EscapeString(strings.TrimSpace(u.City))
 	u.Adress = html.EscapeString(strings.TrimSpace(u.Adress))
 	u.PhoneNumber = html.EscapeString(strings.TrimSpace(u.PhoneNumber))
-	u.HospitalName = html.EscapeString(strings.TrimSpace(u.HospitalName))
+	u.OrgaName = html.EscapeString(strings.TrimSpace(u.OrgaName))
+	u.TypeOrga = html.EscapeString(strings.TrimSpace(u.TypeOrga))
 	u.Description = html.EscapeString(strings.TrimSpace(u.Description))
 	u.Degree = html.EscapeString(strings.TrimSpace(u.Degree))
 	u.Longitude = html.EscapeString(strings.TrimSpace(u.Longitude))
@@ -215,21 +214,19 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint64) (*User, error) {
 	}
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"password":      u.Password,
-			"firstname":     u.Firstname,
-			"lastname":      u.Lastname,
-			"email":         u.Email,
-			"date_of_birth": u.Dateofbirth,
-			"sexe":          u.Sexe,
-			"city":          u.City,
-			"adress":        u.Adress,
-			"phone_number":  u.PhoneNumber,
-			"hospital_name": u.HospitalName,
-			"description":   u.Description,
-			"degree":        u.Degree,
-			"longitude":     u.Longitude,
-			"latitude":      u.Latitude,
-			"update_at":     time.Now(),
+			"firstname":    u.Firstname,
+			"lastname":     u.Lastname,
+			"email":        u.Email,
+			"type_orga":    u.TypeOrga,
+			"orga_name":    u.OrgaName,
+			"city":         u.City,
+			"adress":       u.Adress,
+			"phone_number": u.PhoneNumber,
+			"description":  u.Description,
+			"degree":       u.Degree,
+			"longitude":    u.Longitude,
+			"latitude":     u.Latitude,
+			"update_at":    time.Now(),
 		},
 	)
 	if db.Error != nil {
