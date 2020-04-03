@@ -10,12 +10,13 @@ import (
 
 // Apply struct
 type Apply struct {
-	ID        uint64    `gorm:"primary_key;auto_increment" json:"id"`
-	UserID    uint64    `gorm:"not null" json:"user_id"`
-	MissionID uint64    `gorm:"not null" json:"mission_id"`
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	Mission   Mission   `json:"mission"`
+	ID        	uint64    	`gorm:"primary_key;auto_increment" json:"id"`
+	UserID    	uint64    	`gorm:"not null" json:"user_id"`
+	MissionID 	uint64    	`gorm:"not null" json:"mission_id"`
+	CreatedAt 	time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt 	time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	Mission   	Mission   	`json:"mission"`
+	User   		User   		`json:"user"`
 }
 
 // SaveApply : function to apply to a mission
@@ -66,6 +67,14 @@ func (a *Apply) GetAppliesInfo(db *gorm.DB, pid uint64) (*[]Apply, error) {
 	err := db.Debug().Model(&Apply{}).Where("mission_id = ?", pid).Find(&applies).Error
 	if err != nil {
 		return &[]Apply{}, err
+	}
+	if len(applies) > 0 {
+		for i := range applies {
+			err := db.Debug().Model(&User{}).Where("id = ?", applies[i].UserID).Take(&applies[i].User).Error
+			if err != nil {
+				return &[]Apply{}, err
+			}
+		}
 	}
 	return &applies, err
 }
