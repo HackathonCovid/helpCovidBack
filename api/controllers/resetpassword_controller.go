@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-
+	"github.com/HackathonCovid/helpCovidBack/api/auth"
 	"github.com/HackathonCovid/helpCovidBack/api/mailer"
 	"github.com/HackathonCovid/helpCovidBack/api/models"
 	"github.com/HackathonCovid/helpCovidBack/api/security"
@@ -185,4 +185,104 @@ func (server *Server) ResetPassword(c *gin.Context) {
 			"response": "Success",
 		})
 	}
+}
+
+
+
+func (server *Server) ResetUserPassword(c *gin.Context){
+
+	uid, err := auth.ExtractTokenID(c.Request)
+	if err != nil {
+		errList["Unauthorized"] = "Unauthorized"
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": http.StatusUnauthorized,
+			"error":  errList,
+		})
+		return
+	}
+
+	// check if the user exist:
+	user := models.User{}
+	err = server.DB.Debug().Model(models.User{}).Where("id = ?", uid).Take(&user).Error
+	if err != nil {
+		errList["Unauthorized"] = "Unauthorized"
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status": http.StatusUnauthorized,
+			"error":  errList,
+		})
+		return
+	}
+
+	// Start processing the request
+	body, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		errList["Invalid_body"] = "Unable to get request"
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  errList,
+		})
+		return
+	}
+
+	requestBody := map[string]string{}
+	err = json.Unmarshal(body, &requestBody)
+	if err != nil {
+		errList["Unmarshal_error"] = "Cannot unmarshal body"
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  errList,
+		})
+		return
+	}
+	if requestBody["new_password"] == "" || requestBody["retype_password"] == "" {
+		errList["Empty_passwords"] = "Please ensure both field are entered"
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  errList,
+		})
+		return
+	}
+
+	if requestBody["new_password"] != "" && requestBody["retype_password"] != "" {
+		//Also check if the new password
+		if len(requestBody["new_password"]) < 6 || len(requestBody["retype_password"]) < 6 {
+			errList["Invalid_Passwords"] = "Password should be at least 6 characters"
+			c.JSON(http.StatusUnprocessableEntity, gin.H{
+				"status": http.StatusUnprocessableEntity,
+				"error":  errList,
+			})
+			return
+		}
+		if requestBody["new_password"] != requestBody["retype_password"] {
+			errList["Password_unequal"] = "Passwords provided do not match"
+			c.JSON(http.StatusUnprocessableEntity, gin.H{
+				"status": http.StatusUnprocessableEntity,
+				"error":  errList,
+			})
+			return
+		}
+		
+		if(user.Email == requestBody["email"]  ){
+			err := user.UpdatePassword(server.DB)
+			if err != nil {
+				fmt.Println("this is the error: ", err)
+				errList["Cannot_save"] = "Cannot Save, Please try again later"
+				c.JSON(http.StatusUnprocessableEntity, gin.H{
+					"status": http.StatusUnprocessableEntity,
+					"error":  errList,
+				})
+				return
+			}
+			c.JSON(http.StatusOK, gin.H{
+				"status":   http.StatusOK,
+				"response": "Success",
+			})
+		}
+
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":   http.StatusBadRequest,
+		"response": "Success",
+	})
+
 }

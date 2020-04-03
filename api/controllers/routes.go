@@ -13,6 +13,7 @@ func (s *Server) initializeRoutes() {
 		// Reset password:
 		v1.POST("/password/forgot", s.ForgotPassword)
 		v1.POST("/password/reset", s.ResetPassword)
+		v1.POST("/password/userreset", middlewares.TokenAuthMiddleware(), s.ResetUserPassword)
 
 		//Users routes
 		v1.POST("/users", s.CreateUser)
