@@ -263,6 +263,7 @@ func (server *Server) ResetUserPassword(c *gin.Context){
 		}
 		
 		if(user.Email == requestBody["email"]  ){
+			user.Password = requestBody["new_password"]
 			err := user.UpdatePassword(server.DB)
 			if err != nil {
 				fmt.Println("this is the error: ", err)
@@ -273,15 +274,11 @@ func (server *Server) ResetUserPassword(c *gin.Context){
 				})
 				return
 			}
-			c.JSON(http.StatusOK, gin.H{
-				"status":   http.StatusOK,
-				"response": "Success",
-			})
 		}
 
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"status":   http.StatusBadRequest,
+		"status":   http.StatusOK,
 		"response": "Success",
 	})
 
