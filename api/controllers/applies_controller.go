@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -126,6 +128,79 @@ func (server *Server) GetApplies(c *gin.Context) {
 	})
 }
 
+// ValidateApply : function to validate an apply of a mission
+func (server *Server) ValidateApply(c *gin.Context) {
+	//clear previous error if any
+	errList = map[string]string{}
+
+	applyID := c.Param("id")
+	// Check if the apply id is valid
+	pid, err := strconv.ParseUint(applyID, 10, 64)
+	if err != nil {
+		errList["Invalid_request"] = "Invalid Request"
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"error":  errList,
+		})
+		return
+	}
+
+	//Check if the apply exist
+	origApply := models.Apply{}
+	err = server.DB.Debug().Model(models.Apply{}).Where("id = ?", pid).Take(&origApply).Error
+	if err != nil {
+		errList["No_apply"] = "No Apply Found"
+		c.JSON(http.StatusNotFound, gin.H{
+			"status": http.StatusNotFound,
+			"error":  errList,
+		})
+		return
+	}
+
+	// Read the data posted
+	body, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		errList["Invalid_body"] = "Unable to get request"
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  errList,
+		})
+		return
+	}
+	// Start processing the request data
+	apply := models.Apply{}
+	err = json.Unmarshal(body, &apply)
+	if err != nil {
+		errList["Unmarshal_error"] = "Cannot unmarshal body"
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  errList,
+		})
+		return
+	}
+
+	apply.ID = origApply.ID
+	apply.UserID = origApply.UserID
+	apply.MissionID = origApply.MissionID
+	apply.Validate = origApply.Validate
+
+	applyUpdated, err := apply.FindApplyAndUpdateByID(server.DB)
+	if err != nil {
+		formattedError := formaterror.FormatError(err.Error())
+		errList = formattedError
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"error":  err,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":   http.StatusOK,
+		"response": applyUpdated,
+	})
+
+}
+
 // WithdrawApply : funtion to withdraw an apply of a mission
 func (server *Server) WithdrawApply(c *gin.Context) {
 
@@ -186,7 +261,6 @@ func (server *Server) WithdrawApply(c *gin.Context) {
 		"response": "Apply deleted",
 	})
 }
-
 
 func (server *Server) GetAppliesById(c *gin.Context) {
 	//clear previous error if any
