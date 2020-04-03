@@ -22,6 +22,7 @@ type Mission struct {
 	NbPeopleRequired int        `gorm:"null;" json:"nb_people_required"`
 	SkillsRequired   string     `gorm:"text;not null;" json:"skills_required"`
 	NightOrDay       string     `gorm:"size:150;not null;" json:"night_or_day"`
+	FileBase64       string     `gorm:"size:255;null;" json:"file_base_64"`
 	AddressHospital  string     `gorm:"size:255;not null;" json:"address_hospital"`
 	Author           User       `json:"author"`
 	AuthorID         uint64     `gorm:"not null" json:"author_id"`
