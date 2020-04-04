@@ -123,7 +123,12 @@ func (a *Apply) DeleteMissionApplies(db *gorm.DB, pid uint64) (int64, error) {
 func (a *Apply) FindApplyAndUpdateByID(db *gorm.DB) (*Apply, error) {
 	var err error
 
-	err = db.Debug().Model(Apply{}).Where("id = ?", a.ID).Updates(Apply{Validate: a.Validate, UpdatedAt: time.Now()}).Error
+	err = db.Debug().Model(Apply{}).Where("id = ?", a.ID).UpdateColumns(
+		map[string]interface{}{
+			"validate":  a.Validate,
+			"update_at": time.Now(),
+		},
+	).Error
 	if err != nil {
 		return &Apply{}, err
 	}

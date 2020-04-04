@@ -182,7 +182,6 @@ func (server *Server) ValidateApply(c *gin.Context) {
 	apply.ID = origApply.ID
 	apply.UserID = origApply.UserID
 	apply.MissionID = origApply.MissionID
-	apply.Validate = origApply.Validate
 
 	applyUpdated, err := apply.FindApplyAndUpdateByID(server.DB)
 	if err != nil {

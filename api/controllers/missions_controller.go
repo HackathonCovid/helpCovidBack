@@ -73,6 +73,10 @@ func (server *Server) CreateMission(c *gin.Context) {
 		})
 		return
 	}
+/*
+	reader := bufio.NewReader(mission.FileBase64)
+    content, _ := ioutil.ReadAll(reader)
+	mission.FileBase64 = base64.StdEncoding.EncodeToString(content)*/
 
 	missionCreated, err := mission.SaveMission(server.DB)
 	if err != nil {
