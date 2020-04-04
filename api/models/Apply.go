@@ -75,6 +75,10 @@ func (a *Apply) GetAppliesInfo(db *gorm.DB, pid uint64) (*[]Apply, error) {
 			if err != nil {
 				return &[]Apply{}, err
 			}
+			err_2 := db.Debug().Model(&Mission{}).Where("id = ?", applies[i].MissionID).Take(&applies[i].Mission).Error
+			if err_2 != nil {
+				return &[]Apply{}, err
+			}
 		}
 	}
 	return &applies, err
