@@ -10,13 +10,14 @@ import (
 
 // Apply struct
 type Apply struct {
-	ID        	uint64    	`gorm:"primary_key;auto_increment" json:"id"`
-	UserID    	uint64    	`gorm:"not null" json:"user_id"`
-	MissionID 	uint64    	`gorm:"not null" json:"mission_id"`
-	CreatedAt 	time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt 	time.Time 	`gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	Mission   	Mission   	`json:"mission"`
-	User   		User   		`json:"user"`
+	ID        uint64    `gorm:"primary_key;auto_increment" json:"id"`
+	UserID    uint64    `gorm:"not null" json:"user_id"`
+	MissionID uint64    `gorm:"not null" json:"mission_id"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	Validate  int       `gorm:"default:0" json:"validate"`
+	Mission   Mission   `json:"mission"`
+	User      User      `json:"user"`
 }
 
 // SaveApply : function to apply to a mission
@@ -116,4 +117,21 @@ func (a *Apply) DeleteMissionApplies(db *gorm.DB, pid uint64) (int64, error) {
 		return 0, db.Error
 	}
 	return db.RowsAffected, nil
+}
+
+// FindApplyAndUpdateByID : When an appply is updated, we also delete the applies that the mission had
+func (a *Apply) FindApplyAndUpdateByID(db *gorm.DB) (*Apply, error) {
+	var err error
+
+	err = db.Debug().Model(Apply{}).Where("id = ?", a.ID).UpdateColumns(
+		map[string]interface{}{
+			"validate":  a.Validate,
+			"update_at": time.Now(),
+		},
+	).Error
+	if err != nil {
+		return &Apply{}, err
+	}
+
+	return a, nil
 }
