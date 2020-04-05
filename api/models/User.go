@@ -271,3 +271,15 @@ func (u *User) UpdatePassword(db *gorm.DB) error {
 	}
 	return nil
 }
+
+func (u *User) checkPassword(password string) (bool, error) {
+	hashedPassword, err := security.Hash(password)
+	if err != nil {
+		return false, err
+	}
+	
+	if u.Password != string(hashedPassword){
+		return false, nil
+	}
+	return true, nil
+}

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	
 	"github.com/HackathonCovid/helpCovidBack/api/auth"
 	"github.com/HackathonCovid/helpCovidBack/api/mailer"
 	"github.com/HackathonCovid/helpCovidBack/api/models"
@@ -234,6 +235,20 @@ func (server *Server) ResetUserPassword(c *gin.Context){
 		})
 		return
 	}
+
+	
+	err = security.VerifyPassword(user.Password, requestBody["current_password"])
+	if err != nil {
+		errList["Empty_passwords"] = "Wrong current password"
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"status": http.StatusUnprocessableEntity,
+			"error":  errList,
+		})
+		return
+	}
+
+
+
 	if requestBody["new_password"] == "" || requestBody["retype_password"] == "" {
 		errList["Empty_passwords"] = "Please ensure both field are entered"
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -242,6 +257,8 @@ func (server *Server) ResetUserPassword(c *gin.Context){
 		})
 		return
 	}
+
+
 
 	if requestBody["new_password"] != "" && requestBody["retype_password"] != "" {
 		//Also check if the new password
