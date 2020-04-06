@@ -19,6 +19,10 @@ func Load(db *gorm.DB) {
 	layout2 := "2006-01-02"
 	end, _ := time.Parse(layout2, input2)
 
+	input3 := "2020-10-20"
+	layout3 := "2006-01-02"
+	end2, _ := time.Parse(layout3, input3)
+
 	var users = []models.User{
 		models.User{
 			Firstname:   "Steve",
@@ -72,56 +76,56 @@ func Load(db *gorm.DB) {
 
 	var missions = []models.Mission{
 		models.Mission{
-			Title:            "Aide clinique paris 11",
-			Description:      "Aider pour les salles de réa",
+			Title:            "Aide à la clinique du Mont Louis",
+			Description:      "Besoin de bénévoles pour augmenter le personnel de supports des chambres de réanimations",
 			StartDate:        start,
 			EndDate:          end,
-			NbDays:           5,
+			NbDays:           10,
 			NbPeopleRequired: 2,
 			SkillsRequired:   "Aucune",
-			NightOrDay:       "Night",
+			NightOrDay:       "nuit",
 			AddressHospital:  "30 rue Kilford",
 			AuthorID:         1,
 		},
 		models.Mission{
-			Title:            "Aide clinique 92",
-			Description:      "Aider pour le ménage",
+			Title:            "Aide au Centre Hospitalier Stell",
+			Description:      "Aider les équipes ménagères",
 			StartDate:        start,
-			EndDate:          end,
+			EndDate:          end2,
 			NbDays:           3,
-			NbPeopleRequired: 2,
+			NbPeopleRequired: 4,
 			SkillsRequired:   "Aucune",
-			NightOrDay:       "Day",
-			AddressHospital:  "36 rue du Général Leclerc",
+			NightOrDay:       "jour et nuit",
+			AddressHospital:  "1 rue Charles Drot",
 			AuthorID:         1,
 		},
 		models.Mission{
-			Title:            "Aide hopital",
+			Title:            "Ehpad Villa Borghèse",
 			Description:      "Aider pour ranger matériel",
 			StartDate:        start,
 			EndDate:          end,
 			NbDays:           3,
 			NbPeopleRequired: 2,
 			SkillsRequired:   "Aucune",
-			NightOrDay:       "Day",
-			AddressHospital:  "403 avenue de la République",
+			NightOrDay:       "jour",
+			AddressHospital:  "8 rue Paul Napoléon",
 			AuthorID:         2,
 		},
 	}
 
 	var comments = []models.Comment{
 		models.Comment{
-			Body:      "Super, merci",
+			Body:      "Belle initiative",
 			UserID:    1,
 			MissionID: 1,
 		},
 		models.Comment{
-			Body:      "Ne fonctionne pas",
+			Body:      "Je participe !",
 			UserID:    2,
 			MissionID: 1,
 		},
 		models.Comment{
-			Body:      "Test comment",
+			Body:      "Dommage que je sois trop loin ...",
 			UserID:    1,
 			MissionID: 2,
 		},
